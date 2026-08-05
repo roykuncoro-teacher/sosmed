@@ -2,14 +2,14 @@ package com.example.example
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -20,7 +20,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 
-class profil : AppCompatActivity() {
+class ProfileFragment : Fragment() {
 
     private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
     private val firestore: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
@@ -28,73 +28,69 @@ class profil : AppCompatActivity() {
     private val userPostImages = mutableListOf<String>()
     private lateinit var gridAdapter: ProfileGridAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.profil)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_profile, container, false)
+    }
 
-        // Window Insets handling
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.profil)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        // 1. Setup UI & RecyclerView
-        setupRecyclerView()
-        setupTabLayout()
+        // 1. Setup UI Components
+        setupRecyclerView(view)
+        setupTabLayout(view)
 
         // 2. Fetch Data dari Firebase
         val currentUserId = auth.currentUser?.uid
         if (currentUserId != null) {
-            loadUserProfile(currentUserId)
-            loadUserPosts(currentUserId)
+            loadUserProfile(view, currentUserId)
+            loadUserPosts(view, currentUserId)
         } else {
             redirectToLogin()
         }
 
-        // 3. Setup Listener Tombol
-        findViewById<ImageView>(R.id.btnMenu).setOnClickListener {
+        // 3. Listener Klik
+        view.findViewById<ImageView>(R.id.btnMenu).setOnClickListener {
             showMenuOptions()
         }
 
-        findViewById<MaterialButton>(R.id.btnEditProfile).setOnClickListener {
-            Toast.makeText(this, "Fitur Edit Profil", Toast.LENGTH_SHORT).show()
+        view.findViewById<MaterialButton>(R.id.btnEditProfile).setOnClickListener {
+            Toast.makeText(requireContext(), "Fitur Edit Profil", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun setupRecyclerView() {
-        val rvProfileGrid = findViewById<RecyclerView>(R.id.rvProfileGrid)
+    private fun setupRecyclerView(view: View) {
+        val rvProfileGrid = view.findViewById<RecyclerView>(R.id.rvProfileGrid)
         gridAdapter = ProfileGridAdapter(userPostImages)
-        rvProfileGrid.layoutManager = GridLayoutManager(this, 3)
+        rvProfileGrid.layoutManager = GridLayoutManager(requireContext(), 3)
         rvProfileGrid.adapter = gridAdapter
     }
 
-    private fun setupTabLayout() {
-        val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
+    private fun setupTabLayout(view: View) {
+        val tabLayout = view.findViewById<TabLayout>(R.id.tabLayout)
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_menu))
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_user))
     }
 
-    /**
-     * Memuat informasi data diri user dari Cloud Firestore (collection "users")
-     */
-    private fun loadUserProfile(uid: String) {
+    private fun loadUserProfile(view: View, uid: String) {
         firestore.collection("users").document(uid)
             .addSnapshotListener { document, error ->
                 if (error != null || document == null || !document.exists()) return@addSnapshotListener
 
                 val username = document.getString("username") ?: "username"
                 val name = document.getString("name") ?: "Nama Pengguna"
-                val bio = document.getString("bio") ?: "📸 Visual Creator"
+                val bio = document.getString("bio") ?: "Bio Profil..."
                 val avatarUrl = document.getString("avatarUrl") ?: ""
 
-                findViewById<TextView>(R.id.tvUsernameTop).text = username
-                findViewById<TextView>(R.id.tvFullName).text = name
-                findViewById<TextView>(R.id.tvBio).text = bio
+                view.findViewById<TextView>(R.id.tvUsernameTop).text = username
+                view.findViewById<TextView>(R.id.tvFullName).text = name
+                view.findViewById<TextView>(R.id.tvBio).text = bio
 
-                val ivProfile = findViewById<ShapeableImageView>(R.id.ivProfile)
-                if (avatarUrl.isNotEmpty()) {
+                val ivProfile = view.findViewById<ShapeableImageView>(R.id.ivProfile)
+                if (avatarUrl.isNotEmpty() && isAdded) {
                     Glide.with(this)
                         .load(avatarUrl)
                         .placeholder(R.drawable.img_placeholder)
@@ -103,10 +99,7 @@ class profil : AppCompatActivity() {
             }
     }
 
-    /**
-     * Memuat postingan milik pengguna saat ini saja dari Firestore
-     */
-    private fun loadUserPosts(uid: String) {
+    private fun loadUserPosts(view: View, uid: String) {
         firestore.collection("posts")
             .whereEqualTo("userId", uid)
             .orderBy("createdAt", Query.Direction.DESCENDING)
@@ -122,19 +115,15 @@ class profil : AppCompatActivity() {
                         }
                     }
 
-                    // Update jumlah postingan
-                    findViewById<TextView>(R.id.tvPostCount).text = userPostImages.size.toString()
+                    view.findViewById<TextView>(R.id.tvPostCount).text = userPostImages.size.toString()
                     gridAdapter.notifyDataSetChanged()
                 }
             }
     }
 
-    /**
-     * Opsi menu dialog untuk Keluar (Logout)
-     */
     private fun showMenuOptions() {
         val options = arrayOf("Logout", "Batal")
-        AlertDialog.Builder(this)
+        AlertDialog.Builder(requireContext())
             .setTitle("Opsi Akun")
             .setItems(options) { dialog, which ->
                 if (which == 0) {
@@ -148,9 +137,9 @@ class profil : AppCompatActivity() {
     }
 
     private fun redirectToLogin() {
-        val intent = Intent(this, login::class.java)
+        val intent = Intent(requireActivity(), login::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
-        finish()
+        requireActivity().finish()
     }
 }
