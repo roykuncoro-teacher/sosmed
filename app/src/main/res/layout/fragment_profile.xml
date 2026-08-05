@@ -1,147 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/bg_main">
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:paddingHorizontal="20dp">
-
-        <TextView
-            android:id="@+id/tvUsernameTop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="username"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_primary"
-            android:layout_centerVertical="true"/>
-
-        <ImageView
-            android:id="@+id/btnMenu"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_menu"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            app:tint="@color/text_primary"/>
-    </RelativeLayout>
+    android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="20dp"
-        android:gravity="center_vertical">
-
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/ivProfile"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@drawable/img_placeholder"
-            android:scaleType="centerCrop"
-            app:shapeAppearanceOverlay="@style/CircleImageView"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tvPostCount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textColor="@color/text_primary"
-                    android:textStyle="bold"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Postingan"
-                    android:textSize="12sp"
-                    android:textColor="@color/text_secondary"/>
-            </LinearLayout>
-        </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingHorizontal="20dp">
-
-        <TextView
-            android:id="@+id/tvFullName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Nama Pengguna"
-            android:textColor="@color/text_primary"
-            android:textStyle="bold"/>
-
-        <TextView
-            android:id="@+id/tvBio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Bio profil..."
-            android:textColor="@color/accent_color"
-            android:textSize="12sp"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:orientation="horizontal">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnEditProfile"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/bg_input"
-                android:text="Edit Profil"
-                app:cornerRadius="8dp"
-                android:layout_marginEnd="8dp"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnShareProfile"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/bg_input"
-                android:text="Bagikan Profil"
-                app:cornerRadius="8dp"/>
-        </LinearLayout>
-    </LinearLayout>
-
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:background="@color/bg_main"
-        app:tabIndicatorColor="@color/text_primary"
-        app:tabSelectedTextColor="@color/text_primary"
-        app:tabTextColor="@color/text_secondary"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvProfileGrid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="3"/>
-</LinearLayout>
+        android:orientation="vertical"
+        android:background="@color/bg_main">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:paddingHorizontal="20dp">
+
+            <TextView
+                android:id="@+id/tvUsernameTop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="username"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:layout_centerVertical="true"/>
+
+            <ImageView
+                android:id="@+id/btnAddPost"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_toStartOf="@id/btnMenu"
+                android:layout_marginEnd="16dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_add"
+                app:tint="@color/text_primary" />
+
+            <ImageView
+                android:id="@+id/btnMenu"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_menu"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                app:tint="@color/text_primary"/>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="20dp"
+            android:gravity="center_vertical">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/ivProfile"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/img_placeholder"
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@style/CircleImageView"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvPostCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="@color/text_primary"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Postingan"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_secondary"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp">
+
+            <TextView
+                android:id="@+id/tvFullName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nama Pengguna"
+                android:textColor="@color/text_primary"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tvBio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bio profil..."
+                android:textColor="@color/accent_color"
+                android:textSize="12sp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnEditProfile"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/bg_input"
+                    android:text="Edit Profil"
+                    app:cornerRadius="8dp"
+                    android:layout_marginEnd="8dp"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnShareProfile"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/bg_input"
+                    android:text="Bagikan Profil"
+                    app:cornerRadius="8dp"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@color/bg_main"
+            app:tabIndicatorColor="@color/text_primary"
+            app:tabSelectedTextColor="@color/text_primary"
+            app:tabTextColor="@color/text_secondary"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvProfileGrid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="3"/>
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddPost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="20dp"
+        android:src="@drawable/ic_add"
+        app:backgroundTint="@color/accent_color"
+        app:tint="@color/bg_main" />
+
+</FrameLayout>

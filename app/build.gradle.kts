@@ -59,4 +59,6 @@ dependencies {
     implementation("com.google.firebase:firebase-storage")
     //memuat gambar dari URL
     implementation("com.github.bumptech.glide:glide:4.16.0")
+    // Google Sign-In SDK
+    implementation("com.google.android.gms:play-services-auth:21.0.0")
 }

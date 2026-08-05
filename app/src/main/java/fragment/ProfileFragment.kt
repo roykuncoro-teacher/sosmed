@@ -8,12 +8,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
@@ -28,6 +30,17 @@ class ProfileFragment : Fragment() {
     private val userPostImages = mutableListOf<String>()
     private lateinit var gridAdapter: ProfileGridAdapter
 
+    // 1. Launcher untuk membuka halaman Upload dan merefresh profil setelah selesai
+    private val uploadLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        val currentUserId = auth.currentUser?.uid
+        if (currentUserId != null && view != null) {
+            // Memuat ulang postingan terbaru setelah kembali dari Activity upload
+            loadUserPosts(requireView(), currentUserId)
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -39,11 +52,11 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 1. Setup UI Components
+        // 2. Setup UI Components
         setupRecyclerView(view)
         setupTabLayout(view)
 
-        // 2. Fetch Data dari Firebase
+        // 3. Fetch Data dari Firebase
         val currentUserId = auth.currentUser?.uid
         if (currentUserId != null) {
             loadUserProfile(view, currentUserId)
@@ -52,7 +65,16 @@ class ProfileFragment : Fragment() {
             redirectToLogin()
         }
 
-        // 3. Listener Klik
+        // 4. Listener Tombol Tambah Postingan (Top Bar & FAB)
+        view.findViewById<ImageView>(R.id.btnAddPost)?.setOnClickListener {
+            openUploadActivity()
+        }
+
+        view.findViewById<FloatingActionButton>(R.id.fabAddPost)?.setOnClickListener {
+            openUploadActivity()
+        }
+
+        // 5. Listener Tombol Lainnya
         view.findViewById<ImageView>(R.id.btnMenu).setOnClickListener {
             showMenuOptions()
         }
@@ -60,6 +82,14 @@ class ProfileFragment : Fragment() {
         view.findViewById<MaterialButton>(R.id.btnEditProfile).setOnClickListener {
             Toast.makeText(requireContext(), "Fitur Edit Profil", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    /**
+     * Membuka Activity Upload menggunakan ActivityResultLauncher
+     */
+    private fun openUploadActivity() {
+        val intent = Intent(requireContext(), upload::class.java)
+        uploadLauncher.launch(intent)
     }
 
     private fun setupRecyclerView(view: View) {
